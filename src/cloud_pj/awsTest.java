@@ -59,8 +59,6 @@ public class awsTest {
 		Scanner id_string = new Scanner(System.in);
 		int number = 0;
 
-
-
 		while (true) {
 			System.out.println(" ");
 			System.out.println(" ");
@@ -93,9 +91,11 @@ public class awsTest {
 				if (start) {
 					startInstance(instance_id);
 					break;
-				} else {
-					//stopInstance(instance_id);
 				}
+
+			case 7:
+				instance_id = scan.next();
+				RebootInstance(instance_id);
 			}
 		}
 	}
@@ -153,4 +153,14 @@ public class awsTest {
 		System.out.printf("Successfully started instance %s", instance_id);
 	}
 
+
+	public static void RebootInstance(String instance_id) {
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+
+		RebootInstancesRequest request = new RebootInstancesRequest().withInstanceIds(instance_id);
+
+		RebootInstancesResult response = ec2.rebootInstances(request);
+
+		System.out.printf("Successfully rebooted instance %s", instance_id);
+	}
 }
