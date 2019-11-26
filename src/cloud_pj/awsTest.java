@@ -58,6 +58,9 @@ public class awsTest {
 		Scanner scan = new Scanner(System.in);
 		Scanner id_string = new Scanner(System.in);
 		int number = 0;
+
+
+
 		while (true) {
 			System.out.println(" ");
 			System.out.println(" ");
@@ -82,6 +85,17 @@ public class awsTest {
 			case 2:
 				availableZones();
 				break;
+			case 3:
+				String instance_id;
+				instance_id = scan.next();
+				boolean start;
+				start = true;
+				if (start) {
+					startInstance(instance_id);
+					break;
+				} else {
+					//stopInstance(instance_id);
+				}
 			}
 		}
 	}
@@ -123,6 +137,7 @@ public class awsTest {
 	}
 
 	public static void startInstance(String instance_id) {
+
 		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 		DryRunSupportedRequest<StartInstancesRequest> dry_request = () -> {
 			StartInstancesRequest request = new StartInstancesRequest().withInstanceIds(instance_id);
