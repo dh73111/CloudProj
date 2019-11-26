@@ -77,6 +77,9 @@ public class awsTest {
 			case 1:
 				listInstances();
 				break;
+			case 2:
+				availableZones();
+				break;
 			}
 		}
 	}
@@ -103,4 +106,19 @@ public class awsTest {
 		}
 	}
 	
+	public static void availableZones() {
+		System.out.println("available Zones....");
+		
+		//final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+		DescribeAvailabilityZonesResult zones_response = ec2.describeAvailabilityZones();
+
+	        for(AvailabilityZone zone : zones_response.getAvailabilityZones()) {
+	            System.out.printf(
+	                "[zone] %s " + "[status] %s " +"[region] %s",
+	                zone.getZoneName(), zone.getState(), zone.getRegionName());
+		        System.out.println();
+	            
+	        }
+	        System.out.println();
+	}
 }
