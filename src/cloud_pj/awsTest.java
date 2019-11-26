@@ -12,6 +12,8 @@ import com.amazonaws.services.ec2.model.DescribeImagesResult;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.ec2.model.DescribeRegionsResult;
+import com.amazonaws.services.ec2.model.DryRunResult;
+import com.amazonaws.services.ec2.model.DryRunSupportedRequest;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.ec2.model.RebootInstancesRequest;
@@ -105,21 +107,35 @@ public class awsTest {
 			}
 		}
 	}
-	
+
 	public static void availableZones() {
 		System.out.println("Available Zones....");
-		
+
 		DescribeAvailabilityZonesResult zones_response = ec2.describeAvailabilityZones();
 
-	        for(AvailabilityZone zone : zones_response.getAvailabilityZones()) {
-	            System.out.printf(
-	                "[Availability Zone] %s " + "[status] %s " +"[region] %s",
-	                zone.getZoneName(), zone.getState(), zone.getRegionName());
-		        System.out.println();
-	            
-	        }
-	        System.out.println();
+		for (AvailabilityZone zone : zones_response.getAvailabilityZones()) {
+			System.out.printf("[Availability Zone] %s " + "[status] %s " + "[region] %s", zone.getZoneName(),
+					zone.getState(), zone.getRegionName());
+			System.out.println();
+
+		}
+		System.out.println();
 	}
-	
-	
+
+	public static void startInstance(String instance_id) {
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+		DryRunSupportedRequest<StartInstancesRequest> dry_request = () -> {
+			StartInstancesRequest request = new StartInstancesRequest().withInstanceIds(instance_id);
+			return request.getDryRunRequest();
+		};
+		DryRunResult dry_response = ec2.dryRun(dry_request);
+		if (!dry_response.isSuccessful()) {
+			System.out.printf("Failed dry run to start instance %s", instance_id);
+			throw dry_response.getDryRunResponse();
+		}
+		StartInstancesRequest request = new StartInstancesRequest().withInstanceIds(instance_id);
+		ec2.startInstances(request);
+		System.out.printf("Successfully started instance %s", instance_id);
+	}
+
 }
