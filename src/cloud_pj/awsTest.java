@@ -92,6 +92,14 @@ public class awsTest {
 					startInstance(instance_id);
 					break;
 				}
+			case 5:
+				instance_id = scan.next();
+				boolean start1;
+				start1 = false;
+				if (!start1) {
+					stopInstance(instance_id);
+					break;
+				}
 
 			case 7:
 				instance_id = scan.next();
@@ -153,14 +161,27 @@ public class awsTest {
 		System.out.printf("Successfully started instance %s", instance_id);
 	}
 
+	public static void stopInstance(String instance_id) {
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+
+		DryRunSupportedRequest<StopInstancesRequest> dry_request = () -> {
+			StopInstancesRequest request = new StopInstancesRequest().withInstanceIds(instance_id);
+			return request.getDryRunRequest();
+		};
+		DryRunResult dry_response = ec2.dryRun(dry_request);
+		if (!dry_response.isSuccessful()) {
+			System.out.printf("Failed dry run to stop instance %s", instance_id);
+			throw dry_response.getDryRunResponse();
+		}
+		StopInstancesRequest request = new StopInstancesRequest().withInstanceIds(instance_id);
+		ec2.stopInstances(request);
+		System.out.printf("Successfully stop instance %s", instance_id);
+	}
 
 	public static void RebootInstance(String instance_id) {
 		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
-
 		RebootInstancesRequest request = new RebootInstancesRequest().withInstanceIds(instance_id);
-
 		RebootInstancesResult response = ec2.rebootInstances(request);
-
 		System.out.printf("Successfully rebooted instance %s", instance_id);
 	}
 }
