@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/awssdk/aws-java-sdk-1.11.643.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/awssdk/aws-java-sdk-1.11.643-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/awssdk/aws-java-sdk-1.11.643-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/etclib/joda-time-2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/etclib/org-apache-commons-logging.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/fluent-hc-4.5.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/httpclient-4.5.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/httpclient-cache-4.5.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/httpclient-osgi-4.5.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/httpclient-win-4.5.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/httpcore-4.4.12.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/httpmime-4.5.10.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/jna-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/http/jna-platform-4.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/jackson/jackson-annotations-2.10.0.pr3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/jackson/jackson-core-2.10.0.pr3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/두히/Desktop/libs/libs/jackson/jackson-databind-2.10.0.pr3.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
