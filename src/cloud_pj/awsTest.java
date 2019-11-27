@@ -17,6 +17,7 @@ import com.amazonaws.services.ec2.model.DescribeInstancesResult;
 import com.amazonaws.services.ec2.model.DescribeRegionsResult;
 import com.amazonaws.services.ec2.model.DryRunResult;
 import com.amazonaws.services.ec2.model.DryRunSupportedRequest;
+import com.amazonaws.services.ec2.model.Image;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.InstanceType;
 import com.amazonaws.services.ec2.model.RebootInstancesRequest;
@@ -27,6 +28,8 @@ import com.amazonaws.services.ec2.model.RunInstancesRequest;
 import com.amazonaws.services.ec2.model.RunInstancesResult;
 import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
+
+import java.util.Collection;
 import java.util.Scanner;
 
 public class awsTest {
@@ -42,6 +45,7 @@ public class awsTest {
 		 * by reading from the credentials file located at (~/.aws/credentials).
 		 */
 		ProfileCredentialsProvider credentialsProvider = new ProfileCredentialsProvider();
+
 		try {
 			credentialsProvider.getCredentials();
 		} catch (Exception e) {
@@ -111,6 +115,9 @@ public class awsTest {
 			case 7:
 				instance_id = scan.next();
 				rebootInstance(instance_id);
+				break;
+			case 8:
+				listImages();
 				break;
 			}
 		}
@@ -199,6 +206,7 @@ public class awsTest {
 	}
 
 	public static void createInstance() {
+		System.out.println("Create Instance....");
 		String ami_id = "ami-021b98d67423b62fd";
 		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 		RunInstancesRequest run_request = new RunInstancesRequest().withImageId(ami_id)
@@ -214,5 +222,22 @@ public class awsTest {
 		RebootInstancesRequest request = new RebootInstancesRequest().withInstanceIds(instance_id);
 		RebootInstancesResult response = ec2.rebootInstances(request);
 		System.out.printf("Successfully rebooted instance %s", instance_id);
+	}
+
+	public static void listImages() {
+		DescribeImagesRequest request = new DescribeImagesRequest().withOwners("self");
+		Collection<Image> images = ec2.describeImages(request).getImages();
+
+		System.out.println("Listing Images....");
+		int img_count = 1;
+
+		for (Image Im : images) {
+			System.out.println(img_count + ")");
+			System.out.println("Image ID:" + Im.getImageId());
+			System.out.println("Owner ID:" + Im.getOwnerId());
+			System.out.println("AMI Status:" + Im.getState() + "\n");
+			img_count++;
+		}
+
 	}
 }
