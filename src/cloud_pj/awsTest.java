@@ -3,9 +3,12 @@ package cloud_pj;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
+import com.amazonaws.services.acmpca.model.Tag;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.AmazonEC2ClientBuilder;
 import com.amazonaws.services.ec2.model.AvailabilityZone;
+import com.amazonaws.services.ec2.model.CreateTagsRequest;
+import com.amazonaws.services.ec2.model.CreateTagsResult;
 import com.amazonaws.services.ec2.model.DescribeAvailabilityZonesResult;
 import com.amazonaws.services.ec2.model.DescribeImagesRequest;
 import com.amazonaws.services.ec2.model.DescribeImagesResult;
@@ -45,7 +48,6 @@ public class awsTest {
 			throw new AmazonClientException("Cannot load the credentials from the credential profiles file. "
 					+ "Please make sure that your credentials file is at the correct "
 					+ "location (~/.aws/credentials), and is in valid format.", e);
-
 		}
 		ec2 = AmazonEC2ClientBuilder.standard().withCredentials(credentialsProvider).withRegion("us-east-1") /*
 																												*/
@@ -92,6 +94,9 @@ public class awsTest {
 					startInstance(instance_id);
 					break;
 				}
+			case 4:
+				availableRegions();
+				break;
 			case 5:
 				instance_id = scan.next();
 				boolean start1;
@@ -100,10 +105,13 @@ public class awsTest {
 					stopInstance(instance_id);
 					break;
 				}
-
+			case 6:
+				createInstance();
+				break;
 			case 7:
 				instance_id = scan.next();
-				RebootInstance(instance_id);
+				rebootInstance(instance_id);
+				break;
 			}
 		}
 	}
@@ -145,7 +153,7 @@ public class awsTest {
 	}
 
 	public static void startInstance(String instance_id) {
-
+		System.out.println("Start Instance....");
 		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 		DryRunSupportedRequest<StartInstancesRequest> dry_request = () -> {
 			StartInstancesRequest request = new StartInstancesRequest().withInstanceIds(instance_id);
@@ -161,9 +169,21 @@ public class awsTest {
 		System.out.printf("Successfully started instance %s", instance_id);
 	}
 
-	public static void stopInstance(String instance_id) {
-		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+	public static void availableRegions() {
+		System.out.println("Available Regions....");
+		DescribeRegionsResult regions_response = ec2.describeRegions();
 
+		for (Region region : regions_response.getRegions()) {
+			System.out.printf("[Found region] %s " + "[with endpoint] %s", region.getRegionName(),
+					region.getEndpoint());
+			System.out.println();
+		}
+		System.out.println();
+	}
+
+	public static void stopInstance(String instance_id) {
+		System.out.println("Stop Instance....");
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 		DryRunSupportedRequest<StopInstancesRequest> dry_request = () -> {
 			StopInstancesRequest request = new StopInstancesRequest().withInstanceIds(instance_id);
 			return request.getDryRunRequest();
@@ -178,7 +198,18 @@ public class awsTest {
 		System.out.printf("Successfully stop instance %s", instance_id);
 	}
 
-	public static void RebootInstance(String instance_id) {
+	public static void createInstance() {
+		String ami_id = "ami-021b98d67423b62fd";
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+		RunInstancesRequest run_request = new RunInstancesRequest().withImageId(ami_id)
+				.withInstanceType(InstanceType.T2Micro).withMaxCount(1).withMinCount(1);
+		RunInstancesResult run_response = ec2.runInstances(run_request);
+		String reservation_id = run_response.getReservation().getInstances().get(0).getInstanceId();
+		System.out.printf("Successfully started EC2 instance %s based on AMI %s", reservation_id, ami_id);
+	}
+
+	public static void rebootInstance(String instance_id) {
+		System.out.println("Reboot Instance....");
 		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 		RebootInstancesRequest request = new RebootInstancesRequest().withInstanceIds(instance_id);
 		RebootInstancesResult response = ec2.rebootInstances(request);
