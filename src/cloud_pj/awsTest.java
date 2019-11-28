@@ -118,7 +118,7 @@ public class awsTest {
 				System.exit(0);
 				break;
 			default:
-				System.out.println("Invalid Entry!Please enter number between 1 to 8 and 99\n");
+				System.out.println("Invalid Entry!Please enter number between 1 to 9 and 99\n");
 				break;
 			}
 		}
