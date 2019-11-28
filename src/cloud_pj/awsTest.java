@@ -28,6 +28,7 @@ import com.amazonaws.services.ec2.model.RunInstancesRequest;
 import com.amazonaws.services.ec2.model.RunInstancesResult;
 import com.amazonaws.services.ec2.model.StartInstancesRequest;
 import com.amazonaws.services.ec2.model.StopInstancesRequest;
+import com.amazonaws.services.ec2.model.TerminateInstancesRequest;
 
 import java.util.Collection;
 import java.util.Scanner;
@@ -79,6 +80,7 @@ public class awsTest {
 			System.out.println(" 3. start instance 4. available regions ");
 			System.out.println(" 5. stop instance 6. create instance ");
 			System.out.println(" 7. reboot instance 8. list images ");
+			System.out.println(" 9. terminate instance ");
 			System.out.println(" 99. quit ");
 			System.out.println("------------------------------------------------------------");
 			System.out.print("Enter an integer: ");
@@ -92,24 +94,24 @@ public class awsTest {
 				break;
 			case 3:
 				startInstance(writeInstanceid());
-				printInstance();
 				break;
 			case 4:
 				availableRegions();
 				break;
 			case 5:
 				stopInstance(writeInstanceid());
-				printInstance();
 				break;
 			case 6:
 				createInstance();
 				break;
 			case 7:
 				rebootInstance(writeInstanceid());
-				printInstance();
 				break;
 			case 8:
 				listImages();
+				break;
+			case 9:
+				terminateInstance(writeInstanceid());
 				break;
 			case 99:
 				System.out.println("The program will now exit!\n");
@@ -236,14 +238,20 @@ public class awsTest {
 		}
 	}
 	
+	public static void terminateInstance(String instance_id) {
+		System.out.println("Termiante Instance....");
+		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
+		TerminateInstancesRequest terminateInstancesRequest = new TerminateInstancesRequest()
+				.withInstanceIds(instance_id);
+		ec2.terminateInstances(terminateInstancesRequest).getTerminatingInstances().get(0).getPreviousState().getName();
+		System.out.printf("Successfully started instance %s", instance_id);
+	}
+	
 	public static String writeInstanceid() {
 	    Scanner scan = new Scanner(System.in);
 		String instance_id;
+		System.out.print("Instance ID : ");
 		instance_id = scan.next();
 		return instance_id;
-	}
-	
-	public static void printInstance() {
-		System.out.print("Instance ID : ");
 	}
 }
