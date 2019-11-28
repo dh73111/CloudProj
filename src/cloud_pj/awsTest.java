@@ -45,7 +45,7 @@ public class awsTest {
 		 * by reading from the credentials file located at (~/.aws/credentials).
 		 */
 		ProfileCredentialsProvider credentialsProvider = new ProfileCredentialsProvider();
-
+		
 		try {
 			credentialsProvider.getCredentials();
 		} catch (Exception e) {
@@ -64,7 +64,8 @@ public class awsTest {
 		Scanner scan = new Scanner(System.in);
 		Scanner id_string = new Scanner(System.in);
 		int number = 0;
-
+		String instance_id;
+		
 		while (true) {
 			System.out.println(" ");
 			System.out.println(" ");
@@ -90,34 +91,32 @@ public class awsTest {
 				availableZones();
 				break;
 			case 3:
-				String instance_id;
-				instance_id = scan.next();
-				boolean start;
-				start = true;
-				if (start) {
-					startInstance(instance_id);
-					break;
-				}
+				startInstance(writeInstanceid());
+				printInstance();
+				break;
 			case 4:
 				availableRegions();
 				break;
 			case 5:
-				instance_id = scan.next();
-				boolean start1;
-				start1 = false;
-				if (!start1) {
-					stopInstance(instance_id);
-					break;
-				}
+				stopInstance(writeInstanceid());
+				printInstance();
+				break;
 			case 6:
 				createInstance();
 				break;
 			case 7:
-				instance_id = scan.next();
-				rebootInstance(instance_id);
+				rebootInstance(writeInstanceid());
+				printInstance();
 				break;
 			case 8:
 				listImages();
+				break;
+			case 99:
+				System.out.println("The program will now exit!\n");
+				System.exit(0);
+				break;
+			default:
+				System.out.println("Invalid Entry!Please enter number between 1 to 8 and 99\n");
 				break;
 			}
 		}
@@ -190,6 +189,7 @@ public class awsTest {
 
 	public static void stopInstance(String instance_id) {
 		System.out.println("Stop Instance....");
+		
 		final AmazonEC2 ec2 = AmazonEC2ClientBuilder.defaultClient();
 		DryRunSupportedRequest<StopInstancesRequest> dry_request = () -> {
 			StopInstancesRequest request = new StopInstancesRequest().withInstanceIds(instance_id);
@@ -223,21 +223,27 @@ public class awsTest {
 		RebootInstancesResult response = ec2.rebootInstances(request);
 		System.out.printf("Successfully rebooted instance %s", instance_id);
 	}
-
+	
 	public static void listImages() {
 		DescribeImagesRequest request = new DescribeImagesRequest().withOwners("self");
-		Collection<Image> images = ec2.describeImages(request).getImages();
-
+		Collection<Image> images = ec2.describeImages(request).getImages();	
 		System.out.println("Listing Images....");
 		int img_count = 1;
-
 		for (Image Im : images) {
-			System.out.println(img_count + ")");
-			System.out.println("Image ID:" + Im.getImageId());
-			System.out.println("Owner ID:" + Im.getOwnerId());
-			System.out.println("AMI Status:" + Im.getState() + "\n");
+			System.out.printf("[%d] " + "[Image ID] %s " + "[Owner ID] %s " + "[AMI Status] %s",img_count, Im.getImageId(), Im.getOwnerId(), Im.getState());
+			System.out.println();
 			img_count++;
 		}
-
+	}
+	
+	public static String writeInstanceid() {
+	    Scanner scan = new Scanner(System.in);
+		String instance_id;
+		instance_id = scan.next();
+		return instance_id;
+	}
+	
+	public static void printInstance() {
+		System.out.print("Instance ID : ");
 	}
 }
